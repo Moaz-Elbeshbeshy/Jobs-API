@@ -11,6 +11,11 @@ const cors = require('cors')
 const helmet = require('helmet')
 const rateLimiter = require('express-rate-limit')
 
+// Swagger
+const swaggerUI = require('swagger-ui-express')
+const YAML = require('yamljs')
+const swaggerDocument = YAML.load('./swagger.yaml')
+
 // routes
 const authRouter = require('./routes/auth')
 const jobsRouter = require('./routes/jobs')
@@ -27,8 +32,10 @@ app.use(cors())
 app.use(sanitize)
 
 app.get('/', (req, res) => {
-  res.send('Jobs API')
+  res.send('<h1>Jobs API</h1><a href="/api-docs">Documentation</a>')
 })
+
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
 
 // routes
 app.use('/api/v1/auth', authRouter)
